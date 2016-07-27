@@ -1,0 +1,38 @@
+{
+  "name": "antd-cms",
+  "version": "1.0.0",
+  "entry": {
+    "index": "./src/index.jsx"
+  },
+  "dependencies": {
+    "antd": "^1.4.0",
+    "atool-build": "0.4.x",
+    "babel-plugin-antd": "^0.1.2",
+    "bce-sdk-js": "^0.1.7",
+    "echarts-for-react": "^1.1.2",
+    "es3ify-loader": "^0.1.0",
+    "history": "^2.1.1",
+    "immutable": "^3.8.1",
+    "react": "~0.14.3",
+    "react-dom": "~0.14.3",
+    "react-router": "^2.4.0",
+    "react-tinymce": "^0.5.1",
+    "redux": "^3.5.2",
+    "reqwest": "^2.0.5"
+  },
+  "devDependencies": {
+    "dora": "0.2.4",
+    "dora-plugin-atool-build": "0.4.x",
+    "dora-plugin-hmr": "0.3.x",
+    "dora-plugin-proxy": "0.5.x",
+    "eslint": "~1.10.3",
+    "eslint-config-airbnb": "~2.1.0",
+    "eslint-plugin-react": "~3.11.3",
+    "pre-commit": "1.x"
+  },
+  "scripts": {
+    "dev": "dora -p 8001 --plugins atool-build,proxy,hmr",
+    "lint": "eslint --ext .js,.jsx src",
+    "build": "atool-build -o ./dist"
+  }
+}
