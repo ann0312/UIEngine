@@ -1,14 +1,14 @@
 import React from 'react';
 import { Affix, Icon } from 'antd';
 
-import config from '../common/config';
+import config from '../common/layout';
 
 const Header = React.createClass({
     getDefaultProps: function(){
         return {
-            title: config.header.title,
-            icon: config.header.icon,
-            style: config.header.style,
+            title: config[1].sub[0].title,
+            icon: config[1].sub[0].icon,
+            style: config[1].sub[0].style,
         }
     },
     render: function() {

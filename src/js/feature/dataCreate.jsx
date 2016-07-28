@@ -9,7 +9,7 @@ import Reqwest from 'reqwest';
 import testData from '../common/test-data';
 
 const simple_conf = {
-
+    
     type: 'simpleObject',
 
     initData: function(callback){
@@ -39,7 +39,7 @@ const simple_conf = {
         }
     ],
 
-    UType:[
+    CType:[
         {
             name: 'docid',
             label: '唯一标识',

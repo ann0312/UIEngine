@@ -2,14 +2,14 @@ import React from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'react-router'
 
-import config from '../common/config';
+import config from '../common/layout';
 
 const Sider = React.createClass({
     getDefaultProps: function(){
         return {
-            menuList: config.sider.sub[1].child,
-            menuStyle: config.sider.sub[1].style,
-            openKeys: config.sider.sub[1].openKeys
+            menuList: config[0].sub[1].child,
+            menuStyle: config[0].sub[1].style,
+            openKeys: config[0].sub[1].openKeys
         }
     },
     getInitialState: function(){

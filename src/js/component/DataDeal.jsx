@@ -1,7 +1,7 @@
 // 含有可操作 table 栏的数据展示
 import React from 'react';
 
-import FeatureSetConfig from '../component/FeatureSetConfig';
+import FeatureSetConfig from './FeatureSetConfig';
 
 import Immutable from 'immutable';
 //https://github.com/ded/reqwest
@@ -11,7 +11,7 @@ import testData from '../common/test-data';
 
 
 const conf = {
- 
+
     // 初始化页面的数据 回调函数传入 items 列表
     initData: function(callback){
 

@@ -1,31 +1,11 @@
-// 纯数据展现情况列表
 import React from 'react';
-import ReactEcharts from 'echarts-for-react';
-
 import { Table, Form, Select, Input, Row, Col, Button, Icon } from 'antd';
 import { DatePicker, TimePicker, Radio, Switch} from 'antd';
-import { Upload, Modal, message, Spin} from 'antd';
-
 import { Link } from 'react-router';
-
 import Immutable from 'immutable';
-import Reqwest from 'reqwest';
 
-import CFormItem from './CreateFormItem';
-// 搜索查询栏form 创建新item-form 更新form 
-import UForm from './UpdateForm';
-import CForm from './CreateForm';
-import RForm from './RetrieveForm';
+    const tableFeature = React.createClass({
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioGroup = Radio.Group;
-
-
-// 依赖 config 主题生成react 组件函数
-const FeatureSet = (config) => {
-    
-    let tableFeature = React.createClass({
         getInitialState: function(){
             return {
                 columns: [],
@@ -41,22 +21,19 @@ const FeatureSet = (config) => {
 
             this.setState({
                 loading: true,
-                columns: this.dealConfigColumns(this.props.newItem.columns)
+                columns: this.dealConfigColumns(this.props.item.columns),
+                resultList: this.prop.data,
             });
-
         },
 
         render: function() {
             const self = this;
 
-            return  <div>
-                        <RForm RType={config.RType} submit={self.handleRetrieve}/>
-                        <CForm CType={config.CType} submit={self.handleCreate}/>
-                        <UForm UType={config.UType} submit={self.handleUpdate} isShow={this.state.updateFromShow} updateItem={this.state.updateFromItem} hideForm={this.hideUpdateForm}/>
+            return  <div className="featureItem">
                         <Table dataSource={this.state.resultList} columns={this.state.columns} loading={this.state.loading} bordered/>
                     </div>
         },
- 
+
         // 预处理配置显示中的 colums 数据 用于anted的table配置
         dealConfigColumns: function(lists){
             const self = this;
@@ -70,11 +47,11 @@ const FeatureSet = (config) => {
                     key: item.dataIndex,
                     width: item.width
                 }
-                
+ 
                 if( item.type === 'operate' ){
                     // 兼容单一形式与数组形式
                     let btns = Array.isArray(item.btns)?item.btns:[item.btns];
-                    
+ 
                     // 处理表单 操作 栏目以及回调函数
                     column.render = item.render || function(txt, record){
                         return <span>
@@ -86,7 +63,7 @@ const FeatureSet = (config) => {
                                                 {i!==btns.length-1?<span className="ant-divider"></span>:''}
                                             </span>
                                         );
-                                            
+
                                     })
                                 }
                                 </span>
@@ -99,13 +76,13 @@ const FeatureSet = (config) => {
                     column.sorter = item.sorter || ((a, b) => a[item.dataIndex] - b[item.dataIndex]);
                 }
                 columns.push(column);
-                
+ 
             });
-            
+ 
             return columns;
-            
+
         },
-        
+ 
         // columns 类型对应的通用痛render
         renderFunc: {
             link: (text) => (
@@ -237,167 +214,15 @@ const FeatureSet = (config) => {
         componentDidMount: function(){
             const self = this;
  
-            config.initData(function(list){
+            self.initData(function(list){
                 self.setState({
                     loading: false,
                     resultList: list
                 });
             });
         }
+
     });
 
-    let simpleFeature = React.createClass({
-        getInitialState: function(){
-            return {
-                item:{},
-                loading: false,
-    
-                updateFromShow: false,
-                updateFromItem: {}
-            }
-        },
-        
-        componentWillMount: function(){
-        },
 
-        render: function() {
-            const self = this;
-            const itemInfo = this.state.item;
-            const { item } = this.props;
-
-            const { getFieldProps } = this.props.form;
-            const formItemLayout = {
-                labelCol: { span: 3 },
-                wrapperCol: { span: 18 },
-            };
-
-            const operate = config.operate || [];
-
-            return  <div className="featureItem"> 
-                        <Form horizontal className='p-relative'>
-                            {
-                                this.state.loading?
-                                    <div className="formLayout">
-                                        <Spin size="large" />
-                                    </div>:
-                                    ''
-                            }
-                            { 
-                                config.UType.map(function(item){
-                                    item.defaultValue = itemInfo[item.name]||'';
-                                    return <CFormItem key={item.name} getFieldProps={getFieldProps} formItemLayout={formItemLayout} item={item}/>
-                                })
-                            }
-                        </Form>
-                        { 
-                            operate.map(function(btn){
-                                return <Button key={btn.text} type="primary" size="large" onClick={self.operateCallbacks.bind(self, btn)} style={btn.style}>{btn.text}</Button>
-                            })
-                        }
-                    </div>
-        },
-
-        componentDidMount: function(){
-            const self = this;
-            self.setState({
-                loading: true
-            });
-            
-            config.initData(function(item){
-                self.setState({
-                    item: item,
-                    loading: false
-                });
-            });
-        },
-
-        operateCallbacks: function(btn){
-            const self = this;
-
-            let itemI = Immutable.fromJS(this.props.form.getFieldsValue());
-
-            if(btn.type === 'update'){
-
-                const self = this;
-                
-
-                config.Update(itemI.toJS(), function(item){
-
-                    message.success('更新成功');
-                    
-                    self.setState({
-                        item: item
-                    });
-                });
-
-               
-            }else if(btn.callback){
-                btn.callback(itemI.toJS());
-            }
-        }
-    });
-    simpleFeature = Form.create()(simpleFeature);
-    
-
-    let graphFeature = React.createClass({
-        getInitialState: function(){
-            return {
-                option: config.option
-            }
-        },
-        
-        componentWillMount: function(){
-        },
-
-        render: function() {
-            const self = this;
-            const itemInfo = this.state.item;
-
-            const operate = config.operate || [];
-
-            return  <div className="featureItem">
-                        <ReactEcharts
-                            option={this.state.option} 
-                            style={config.EchartStyle} 
-                            className='react_for_echarts' />
-                    </div>
-        },
-
-        componentDidMount: function(){
-            const self = this;
-            let option = Immutable.fromJS(self.state.option).toJS();
-
-            config.initData(function(series){
-                option.series = series;
-                self.setState({
-                    option: option
-                });
-            });
-        }
-    });
-
-    switch (config.type){
-        case 'tableList':
-            return tableFeature;
-            break;
-
-        case 'graphList':
-            return graphFeature;
-            break;
-            
-        case 'simpleObject':
-            return simpleFeature;
-            break;
-
-        case 'complexObject':
-            return complexFeature;
-            break;
-
-        default:
-            return tableFeature;
-            break;
-    }
-}
-
-
-export default FeatureSet;
+export default tableFeature;

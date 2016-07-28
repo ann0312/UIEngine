@@ -10,9 +10,9 @@ import Header from './js/component/Header';
 import MyMenu from './js/component/MyMenu';
 import IdeComponent from './js/component/IdeComponent';
 
-import config from './js/common/config';
+import layout from './js/common/layout';
 
-const components = config.main.components;
+const components = layout[1].sub[1].components;
 const App = React.createClass({
 	getDefaultProps: function(){
   },
@@ -36,23 +36,8 @@ const App = React.createClass({
 },
     render: function(){
 		return          <div style={{background:'#D1EEEE'}}>
-                        <aside style={config.sider.style}>
-                            {this.dealLayoutList(config.sider.sub)}
-                        </aside>
-
-                        <section className="main-container">
-                    <Header />
-                            {
-                                config.permission?
-                                    (<Main FeatureId ={this.props.params.FeatureId||config.sider.sub[1].selectedKey}/>):
-                                    (<div className="unpermission">
-                                        您暂无权限处理该系统工作，请先
-                                        <a href={config.loginUrl}>登录</a>
-                                        或者找相关人员申请权限。
-                                    </div>)
-                            }
-                        </section>
-                </div>
+                            {this.dealLayoutList(layout)}
+                    </div>
 	},
 
     componentDidMount: function(){
@@ -65,16 +50,15 @@ const App = React.createClass({
     componentDidUpdate: function(){},
     componentWillUnmount: function(){}
 });
-const Main = React.createClass({
+const MyTable = React.createClass({
     render: function(){
         const id = this.props.FeatureId;
-        const Data = config.main.components[id] || config.main.components[config.sider.sub[1].selectedKey];
+        const Data = layout[1].sub[1].components[id] || layout[1].sub[1].components[layout[0].sub[1].selectedKey];
         const Feature = Data.component;
         const title = Data.title;
 
         return  <div key={id}>
-                    <h3 className="f-title">{title}</h3>
-                    <Feature />
+                    <Feature  newItem={layout[1].sub[1].sub[2]} />
                 </div>
     }
 });

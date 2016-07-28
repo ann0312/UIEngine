@@ -4,7 +4,14 @@ import { Upload,Collapse, Tabs, Form,Select, Checkbox, Radio,
         Table, Switch, Button, Icon, Menu, Spin, Input, Col } from 'antd';
 import classNames from 'classnames';
 import MyMenu from './MyMenu';
+import MyForm from './MyForm';
+import MyTable from './MyTable';
 import Header from './Header';
+
+import DataDeal from './DataDeal';
+
+//模拟数据
+import testData from '../common/test-data';
 
 const InputGroup = Input.Group;
 
@@ -13,13 +20,31 @@ class IdeComponent extends Component {
     super(props);
     this.state = {
       collapse: true,
-         focus: false,
-       current: '',
-         theme: 'light',
-          menu: [],
-          list: [],
-         value: ''
+      focus: false,
+      current: '',
+      loading: false,
+      theme: 'light',
+      menu: [],
+      list: [],
+      value: ''
     };
+  }
+
+  initData() {
+  const self = this;
+      //模拟数据
+    if(this.props.item.type == 'table'){
+       setTimeout(function(){
+            var newList = testData.dataShow;
+            newList.forEach(function(ele) {
+                ele.key = ele.id;
+            });
+            self.setState({
+              loading: false,
+              data: newList,
+            });
+       }, 500);
+     }
   }
 
   loadMenu() {
@@ -39,6 +64,8 @@ class IdeComponent extends Component {
   }
 
   componentWillMount(){
+      this.initData();
+/*
       const { item } = this.props;
       if(item.api){
           if(item.type == 'collapse'){
@@ -50,6 +77,7 @@ class IdeComponent extends Component {
               });
           }
       }
+*/
   }
 
   dealCollapseList(list){
@@ -77,12 +105,6 @@ class IdeComponent extends Component {
     }
   }
 
-  handleClick = (e) => {
-    this.setState({
-      current: e.key,
-    });
-  }
-
   goBack() {
     /**
      * 返回上级页面
@@ -97,24 +119,6 @@ class IdeComponent extends Component {
     console.log(key);
   }
 
-  dealMenuList(list) {
-    const self = this;
-    return list.map (function(item) {
-            let icon = item.icon ? (<Icon type={item.icon} />): '';
-            if(item.child && item.child.length){
-                return <Menu.SubMenu key={item.key} title={<span>{icon}<span>{item.text}</span></span>}>
-                    {
-                        self.dealMenuList(item.child)
-                    }
-                </Menu.SubMenu>
-            } else {
-                return <Menu.Item key={item.key}>
-                            <Link to={item.url}>{icon}{item.text}<span style={{float:'right'}}>{item.count}</span></Link>
-                       </Menu.Item>
-            }
-        });
-  }
-
   render() {
     var item = this.props.item;
     if(item.layout){
@@ -123,39 +127,12 @@ class IdeComponent extends Component {
       </Col>
     } else {
       switch(item.type){
-          case 'side': {
-                       return  <aside style={item.style}>{this.props.children}</aside>
-                       };
-          case 'content': {
-                       return  <section>{this.props.children}</section>
-                       };
-          case 'header': {
-                       return  <Header>{this.props.children}</Header>
-                       };
-          case 'menu': {
-                       return  <MyMenu item={item} selectedKey={item.selectedKey} />
-                       };
-        case  'form': {
-                    return <MyForm />;
-                      };
-        case 'table': {
-            const data = [];
-            for (let i = 1; i < 80; i++) {
-              data.push({
-                key: i,
-                customer: `王大锤${i}`,
-                number: 32,
-                contact: `呵呵${i}`,
-                phone: `1383843822${i}`,
-                type: '购销',
-                createdDate: '2016-07-20',
-                state: '进行中',
-              });
-            }
-            item.columns[item.lastkey] = { title: '操作', dataIndex: 'operation', key: 'operation',fixed: 'right', width:100, render: (text, record) => <span><Link to={`/view?id=${record.key}`}>详情</Link><span className='ant-divider'></span><Link to={`/progress?id=${record.key}`}>查看轨迹</Link></span> };
-            return <Table dataSource={data} columns={item.columns} scroll={item.size}/>
-                      };
-        case 'tab': {
+          case 'side':    return  <aside style={item.style}>{this.props.children}</aside>;
+          case 'section': return  <section className={item.className}>{this.props.children}</section>;
+          case 'menu':    return  <MyMenu item={item} selectedKey={item.selectedKey} />;
+          case  'form':   return <MyForm item={item}/>;break;
+          case 'table':   return <DataDeal newItem={item} />;break;
+          case 'tab': {
                       const TabPane = Tabs.TabPane;
                       const { callbackComponent } = this.props;
                       return <Tabs defaultActiveKey={item.selectKey} >
@@ -176,9 +153,8 @@ class IdeComponent extends Component {
                                       {itemContent(item,this.state.list)}
                                  </Collapse> 
                       };
-          case 'div': { 
-                  let icon = item.icon ? (<Icon type={item.icon} />): '';
-                  return <div style={item.styles}>
+          case 'div': {
+                  return <div style={item.style}>
                   {this.props.children}
                   </div>
             };
@@ -189,40 +165,12 @@ class IdeComponent extends Component {
                   </h1>
             };
           case 'switch': return <Switch onChange={this.changeTheme} checkedChildren="暗" unCheckedChildren="亮" />
-          case 'search': {
-                  let icon = item.icon ? (<Icon type={item.icon} />): '';
-                  const btnCls = classNames({
-                    'ant-search-btn': true,
-                    'ant-search-btn-noempty': !!this.state.value.trim(),
-                  });
-                  const searchCls = classNames({
-                    'ant-search-input': true,
-                    'ant-search-input-focus': this.state.focus,
-                  });
-                  return ( 
-                          <div className="ant-search-input-wrapper" style={item.styles}>
-                          <InputGroup className={searchCls}>
-                          { item.child.map( function(item){
-                            if(item.type == 'input'){
-                              return <Input placeholder={item.placeholder} />
-                             }
-                             if(item.type == 'button'){
-                               return <div className="ant-input-group-wrap">
-                               <Button icon={item.icon} className={btnCls} size={item.size} />
-                               </div>
-                             }
-                            })
-                          }
-                          </InputGroup>
-                          </div>
-                         )
-            };
             case 'logo': return <div className="ant-layout-logo" style={item.style}><img src={item.url} /></div>;
           case 'button': return <Button type={item.buttonType} size={item.size} icon={item.icon}></Button>;
           case 'goBack': return <a onClick={this.goBack}>{item.text}</a>;
           default:
                   let icon = item.icon ? `<i class='anticon anticon-${item.icon}'></i>`: '';
-                  var tag  =  `<${item.type}>${icon}${item.text}</${item.type}>`;
+                  var tag  =  `<${item.type} class='${item.className}'>${icon}${item.title}</${item.type}>`;
                   function createMarkup() { return {__html:tag}; };
                   return <div style={item.styles} dangerouslySetInnerHTML={createMarkup()} />;
                   
@@ -250,5 +198,6 @@ function itemContent(item,list){
   }
 
 };
+
 
 export default IdeComponent;
