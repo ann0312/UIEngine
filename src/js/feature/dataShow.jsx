@@ -7,7 +7,7 @@ import Immutable from 'immutable';
 //https://github.com/ded/reqwest
 import Reqwest from 'reqwest';
 
-import testData from '../common/test-data'
+import testData from '../common/test-data';
 
 
 const conf = {
