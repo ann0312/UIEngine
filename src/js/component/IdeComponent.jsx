@@ -9,6 +9,7 @@ import MyTable from './MyTable';
 import Header from './Header';
 
 import DataDeal from './DataDeal';
+import CForm from './CreateForm';
 
 //模拟数据
 import testData from '../common/test-data';
@@ -128,31 +129,30 @@ class IdeComponent extends Component {
     } else {
       switch(item.type){
           case 'side':    return  <aside style={item.style}>{this.props.children}</aside>;
-          case 'section': return  <section className={item.className}>{this.props.children}</section>;
+
+          case 'section': return  <section style={item.style} className={item.className}>{this.props.children}</section>;
+
           case 'menu':    return  <MyMenu item={item} selectedKey={item.selectedKey} />;
-          case  'form':   return <MyForm item={item}/>;break;
-          case 'table':   return <DataDeal newItem={item} />;break;
+
+          case 'table':   return <DataDeal item={item} />;break;
+
+          //case 'form':    return <DataDeal item={item} />;break;
+
+          case 'collapse': return <DataDeal item={item} />;break;
+
           case 'tab': {
                       const TabPane = Tabs.TabPane;
                       const { callbackComponent } = this.props;
                       return <Tabs defaultActiveKey={item.selectKey} >
                       {item.child.map(function (item) {
-                      return <TabPane tab={item.text} key={item.key}>
+                      return <TabPane tab={item.title} key={item.key}>
                              {callbackComponent(item.child)}
                              </TabPane>
                       })
                     }
                       </Tabs>
                     };
-     case 'collapse': {
-                          const Panel = Collapse.Panel;
-                          const { callbackComponent } = this.props;
-                          const { list } = this.state;
 
-                          return <Collapse defaultActiveKey={item.selectKey}>
-                                      {itemContent(item,this.state.list)}
-                                 </Collapse> 
-                      };
           case 'div': {
                   return <div style={item.style}>
                   {this.props.children}
@@ -164,10 +164,10 @@ class IdeComponent extends Component {
                   {this.props.children}
                   </h1>
             };
-          case 'switch': return <Switch onChange={this.changeTheme} checkedChildren="暗" unCheckedChildren="亮" />
+          //case 'switch': return <Switch onChange={this.changeTheme} checkedChildren="暗" unCheckedChildren="亮" />
             case 'logo': return <div className="ant-layout-logo" style={item.style}><img src={item.url} /></div>;
           case 'button': return <Button type={item.buttonType} size={item.size} icon={item.icon}></Button>;
-          case 'goBack': return <a onClick={this.goBack}>{item.text}</a>;
+          case 'goBack': return <a onClick={this.goBack}>{item.title}</a>;
           default:
                   let icon = item.icon ? `<i class='anticon anticon-${item.icon}'></i>`: '';
                   var tag  =  `<${item.type} class='${item.className}'>${icon}${item.title}</${item.type}>`;

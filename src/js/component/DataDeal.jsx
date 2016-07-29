@@ -12,6 +12,7 @@ import testData from '../common/test-data';
 
 const conf = {
 
+    type: 'tableList', // tableList graphList simpleObject complexObject 
     // 初始化页面的数据 回调函数传入 items 列表
     initData: function(callback){
 
@@ -31,7 +32,9 @@ const conf = {
             jsonpCallback: 'fn',
             success: function (data) {
                 //let lists = data.data.stream_data;
-                  let lists = testData.dataShow;  //模拟数据
+
+                  //模拟数据
+                  let lists = testData.dataShow;
  
                 // 必须要向数据中 添加唯一的 key
                 lists.forEach(function(ele) {
@@ -101,155 +104,17 @@ const conf = {
             callback(lists);
 
     },
-
-    // 可设置的查询字段 
-    // RType 查询字段
-    // CType 创建字段
-    // UType 更新字段
-/*
-    RType:[
-        {
-            name: 'keyWord',
-            label: '搜索',
-            type: 'string',
-            placeholder: '按关键字搜索'
-        },{
-            name: 'startDate',
-            label: '开始时间',
-            type: 'date'
-        },{
-            name: 'endDate',
-            label: '结束时间',
-            type: 'date'
-        },{
-            name: 'stype',
-            label: '类型',
-            type: 'select',
-            defaultValue: 'all',
-            options:[{
-                text: '选择类型',
-                value: 'all'
-            },{
-                text: '购销',
-                value: 'buySale'
-            },{
-                text: '寄售',
-                value: 'relySale'
-            }]
-        },{
-            name: 'state',
-            label: '状态',
-            type: 'select',
-            defaultValue: 'all',
-            options:[{
-                text: '选择状态',
-                value: 'all'
-            },{
-                text: '业务发起',
-                value: '发起'
-            },{
-                text: '方案审批',
-                value: '方案审批'
-            },{
-                text: '合同审批',
-                value: '合同审批'
-            },{
-                text: '放款审批',
-                value: '放款审批'
-            }]
-        },
-/*
-          {
-            name: 'rtype',
-            label: '项目类型Radio',
-            type: 'radio',
-            defaultValue: 'one',
-            options:[{
-                text: '选项一',
-                value: 'one'
-            },{
-                text: '选项二',
-                value: 'two'
-            },{
-                text: '选项三',
-                value: 'three'
-            }]
-        },{
-            name: 'ischange',
-            label: '是否过滤',
-            type: 'switch',
-            defaultValue: false
-        }
-
-    ],
-*/
-
-/*
-    columns: [
-        {
-            title: 'ID',     // table header 文案
-            dataIndex: 'id', // 数据对象内的属性，也做react vdom 的key
-            type: 'string',     // table 内显示的类型
-            sort: true,         // 是否需要排序
-        }, {
-            title: '客户',
-            dataIndex: 'customer',
-            type: 'string'
-        }, {
-            title: '编号',
-            sort: true,
-            dataIndex: 'number',
-            type: 'string'
-        }, {
-            title: '联系电话',
-            dataIndex: 'phone',
-            type: 'string'
-        }, {
-            title: '业务类型',
-            dataIndex: 'dataType',
-            sort: true,
-            type: 'string'
-        }, {
-            title: '生产时间',
-            dataIndex: 'createdDate',
-            type: 'string'
-        }, {
-            title: '业务状态',
-            dataIndex: 'state',
-            sort: true,
-            type: 'string'
-        }, {
-            title: '操作',
-            type: 'operate',    // 操作的类型必须为 operate
-            width: 100,
-            fixed: 'right', 
-            btns: [{
-                text: '详情',
-                callback: function(item){
-                    console.log(item)
-                }
-            }, {
-                text: '删除',
-                type: 'delete'
-            }], // 可选
-            
-            // 对应btns 的回调函数 
-            // item为操作的单一数据对象  
-            // callback 为组件的回调函数，将处理之后的数据回传 删除则传undefined
-            // callbacks: [function(item, callback){
-            //     item.docid = 0;
-            //     callback(item, 'update');
-            // },function(item, callback){
-            //     callback(item, 'delete');
-            // }]
-        }
-    ],
-*/
-
-
-
 };
 
-const Feature2 = FeatureSetConfig(conf);
+
+//整合方法与数据,再转换为react组件。
+const Feature2 = React.createClass({
+
+render: function() {
+    const { item }  = this.props;
+    return <div>{FeatureSetConfig(conf,item)}</div>;
+
+}
+});
 
 export default Feature2;

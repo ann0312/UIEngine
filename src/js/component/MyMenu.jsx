@@ -7,14 +7,14 @@ import config from '../common/layout';
 const Sider = React.createClass({
     getDefaultProps: function(){
         return {
-            menuList: config[0].sub[1].child,
-            menuStyle: config[0].sub[1].style,
-            openKeys: config[0].sub[1].openKeys
         }
     },
     getInitialState: function(){
         return {
-            selectedKeys: this.props.selectedKey
+            selectedKeys: this.props.selectedKey,
+            menuList: this.props.item.child,
+            menuStyle: this.props.item.style,
+            openKeys: this.props.item.openKeys
         };
     },
     handleClick: function(e) {
@@ -25,12 +25,12 @@ const Sider = React.createClass({
     render: function() {
 
         return  <Menu onClick={this.handleClick}
-                    style={this.props.menuStyle}
-                    defaultOpenKeys={this.props.openKeys}
+                    style={this.state.menuStyle}
+                    defaultOpenKeys={this.state.openKeys}
                     selectedKeys={[this.state.selectedKeys]}
                     mode="inline">
 
-                    {this.dealMenuList(this.props.menuList)}
+                    {this.dealMenuList(this.state.menuList)}
 
                 </Menu>;
     },

@@ -103,6 +103,7 @@ let RForm = React.createClass({
 
     handleSubmit: function(){
 
+        const { item } = this.props;
         console.log('收到表单值：', this.props.form.getFieldsValue());
         switch(item.submitType){
 

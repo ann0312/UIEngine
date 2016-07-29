@@ -11,7 +11,7 @@ import testData from '../common/test-data';
 
 
 const conf = {
- 
+
     // 初始化页面的数据 回调函数传入 items 列表
     initData: function(callback){
 
@@ -245,8 +245,6 @@ const conf = {
         }
     ],
 */
-
-
 
 };
 

@@ -1,8 +1,7 @@
 
 import React from 'react';
-import { Table, Form, Select, Input, Row, Col, Button, Icon } from 'antd';
+import { Collapse, Table, Form, Select, Input, Row, Col, Button, Icon } from 'antd';
 import { DatePicker, TimePicker, Radio, Switch} from 'antd';
-import { Upload, Modal, message, Spin} from 'antd';
 import { Link } from 'react-router';
 import Immutable from 'immutable';
 
@@ -11,10 +10,10 @@ import UForm from './UpdateForm';
 import CForm from './CreateForm';
 import RForm from './RetrieveForm';
 
-const tableFeature = React.createClass({
+const Panel = Collapse.Panel;
+const ComponentFeature = React.createClass({
   getInitialState: function(){
     return {
-      columns: [],
       resultList: [],
       loading: false,
 
@@ -28,11 +27,6 @@ const tableFeature = React.createClass({
 
   componentWillMount: function(){
 
-    this.setState({
-      loading: true,
-      columns: this.dealConfigColumns(this.props.item.columns)
-    });
-
   },
 
   render: function() {
@@ -40,73 +34,19 @@ const tableFeature = React.createClass({
     const { item } = this.props;
 
     return  <div>
-    {item.retrieve ? (<MyForm item={item.retrieve} submit={self.handleRetrieve}/>):''}
-    {item.create ? (<CForm item={item.create} submit={self.handleCreate}/>):''}
-    {item.update ? (<UForm item={item.update} submit={self.handleUpdate} isShow={this.state.updateFromShow} updateItem={this.state.updateFromItem} hideForm={this.hideUpdateForm}/>):''}
-    <Table dataSource={this.state.resultList} columns={this.state.columns} loading={this.state.loading} bordered/>
-    </div>
-  },
-
-  // 预处理配置显示中的 colums 数据 用于anted的table配置
-  dealConfigColumns: function(lists){
-    const self = this;
-
-    let columns = [];
-
-    lists.forEach((item) => {
-      let column = {
-        title: item.title,
-        dataIndex: item.dataIndex,
-        key: item.dataIndex,
-        width: item.width
-      }
-
-      if( item.type === 'operate' ){
-        // 兼容单一形式与数组形式
-        let btns = Array.isArray(item.btns)?item.btns:[item.btns];
-
-        // 处理表单 操作 栏目以及回调函数
-        column.render = item.render || function(txt, record){
-          return <span>
+        {item.retrieve ? (<MyForm item={item.retrieve} submit={self.handleRetrieve}/>):''}
+        {item.create ? (<CForm item={item.create} submit={self.handleCreate}/>):''}
+        {item.update ? (<UForm item={item.update} submit={self.handleUpdate} isShow={this.state.updateFromShow} updateItem={this.state.updateFromItem} hideForm={this.hideUpdateForm}/>):''}
+        <Collapse defaultActiveKey={item.activeKey}>
           {
-            btns.map(function(btn,i) {
-              return  (
-                <span key={i}>
-                <a href="javascript:void 0;" onClick={self.operateCallbacks.bind(self, record, btn)}>{btn.text}</a>
-                {i!==btns.length-1?<span className="ant-divider"></span>:''}
-                </span>
-              );
-
+            this.state.resultLists.map( function(list){
+              return <Panel header={list.title} key={list.key}>
+                    {list.title}
+              </Panel>
             })
           }
-          </span>
-        };
-      }else{
-        column.render = item.render || self.renderFunc[item.type] || ((text) => (<span>{text}</span>));
-      }
-
-      if(item.sort){
-        column.sorter = item.sorter || ((a, b) => a[item.dataIndex] - b[item.dataIndex]);
-      }
-      columns.push(column);
-
-    });
-
-    return columns;
-
-  },
-
-  // columns 类型对应的通用痛render
-  renderFunc: {
-    link: (text) => (
-      <span>
-      <a href={text}>{text}</a>
-      </span>),
-
-      image: (url) => (
-        <span>
-        <img src={url} />
-        </span>)
+        </Collapse> 
+    </div>
   },
 
   handleCreate: function(info){
@@ -216,10 +156,6 @@ const tableFeature = React.createClass({
             resultList: resultList.toJS()
           });
         });
-      }else if(type === 'view'){
-
-        let viewLink = btn.link + item.id;
-        location.href = viewLink;
       }
 
 
@@ -230,14 +166,28 @@ const tableFeature = React.createClass({
 
   componentDidMount: function(){
     const self = this;
-
-    this.props.config.initData(function(list){
-      self.setState({
-        loading: false,
-        resultList: list
-      });
+    this.setState({
+      loading: true,
     });
+    this.initData();
+  },
+
+  initData: function(){
+    let list = this.props.item.child;
+    let resultLists = [];
+    list.forEach((item) => {
+      let resultList ={
+          title: item.title,
+      };
+
+      resultLists.push(resultList);
+    });
+ 
+    this.setState({
+      resultLists: resultLists,
+      loading: false
+    }); 
   }
 });
 
-export default tableFeature;
+export default ComponentFeature;

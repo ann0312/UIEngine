@@ -276,8 +276,7 @@ const Config =
                       fixed: 'right', 
                       btns: [{
                         text: '详情',
-                        link: 'http://127.0.0.1:8989/#/dataView/',
-                        type: 'view'
+                        type: 'view' 
                       }, {
                         text: '删除',
                         type: 'delete'
@@ -286,6 +285,79 @@ const Config =
                   ],
                 },
              ],
+        components: {
+            "dataShow": {
+                title: '业务列表',
+                component: require('../feature/dataShow')
+            }, 
+            "Feature1-1": {
+                title: '数据展示列表',
+                component: require('../feature/Feature1-1')
+            }, 
+            "Feature1-2": {
+                title: 'simple对象 数据展示',
+                component: require('../feature/Feature1-2')
+            }, 
+            "Feature1-3": {
+                title: '数据可视化 数据展示',
+                component: require('../feature/Feature1-3')
+            }, 
+            "Feature1-4": {
+                title: '综合数据展示',
+                component: require('../feature/Feature1-4')
+            },
+
+            "Feature2-1": {
+                title: '业务列表',
+                component: require('../feature/Feature2-1')
+            }, 
+            "Feature2-2": {
+                title: 'table 数据增删改操作',
+                component: require('../feature/Feature2-2')
+            }, 
+            "Feature2-3": {
+                title: 'simple对象数据修改操作',
+                component: require('../feature/Feature2-3')
+            }, 
+
+            "Feature3-1": {
+                title: '富文本编辑区域',
+                component: require('../feature/Feature3-1')
+            }, 
+
+            "Feature1": {
+                title: '这是功能区域标题1',
+                component: require('../feature/Feature1')
+            },   // 纯数据展示
+            "Feature2": {
+                title: '这是功能区域标题2',
+                component: require('../feature/Feature2')
+            },   // 添加操作
+            "Feature3": {
+                title: '这是功能区域标题3',
+                component: require('../feature/Feature3')
+            },
+            "Feature4": {
+                title: '这是功能区域标题4',
+                component: require('../feature/Feature4')
+            },
+            "Feature5": {
+                title: '这是功能区域标题5',
+                component: require('../feature/Feature5')
+            },
+            "Feature6": {
+                title: '这是功能区域标题6',
+                component: require('../feature/Feature6')
+            },
+            "Feature7": {
+                title: '这是功能区域标题7',
+                component: require('../feature/Feature7')
+            },
+            "Feature8": {
+                title: '这是功能区域标题8',
+                component: require('../feature/Feature2')
+            }
+        },
       }
     ]
     },
